@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Is this a PoC ?</title>
+</head>
+<body>
+
+Here you should be seeing the tutorial.
+
+Your instance is <b id="readiness">not ready yet</b>
+
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const hostParam = urlParams.get('host');
+
+    function changeReadiness(host) {
+        let notReadyYetToBeReplaced = document.getElementById("readiness");
+
+        let iAmReadyLink = document.createElement("a");
+
+        let readyText = document.createTextNode("READY !! GO THERE NOW!!");
+        iAmReadyLink.appendChild(readyText);
+        iAmReadyLink.title = "It's ready";
+        iAmReadyLink.href = decodeURIComponent(host)
+
+        notReadyYetToBeReplaced.parentNode.replaceChild(iAmReadyLink, notReadyYetToBeReplaced)
+
+    }
+
+    async function checkReadinessOfHost(host) {
+        let instanceIsReady = false;
+
+        while (!instanceIsReady) {
+            fetch(`//${host}`)
+                .then(function (response) {
+                    return response.text();
+                })
+                .then(function (html) {
+                    console.log(html);
+
+                    if (!html.includes("<title>Is this a PoC ?</title>")) {
+                        instanceIsReady = true
+                        changeReadiness(host)
+                    }
+                });
+
+            await new Promise(r => setTimeout(r, 10000));
+        }
+    }
+
+    checkReadinessOfHost(hostParam);
+
+</script>
+</body>
+</html>
