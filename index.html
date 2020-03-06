@@ -11,8 +11,8 @@ Here you should be seeing the tutorial.
 Your instance is <b id="readiness">not ready yet</b>
 
 <script>
-    const urlParams = new URLSearchParams(window.location.search);
-    const hostParam = urlParams.get('host');
+    //const urlParams = new URLSearchParams(window.location.search);
+    const hostParam = window.location.hostname;//urlParams.get('host');
 
     function changeReadiness(host) {
         let notReadyYetToBeReplaced = document.getElementById("readiness");
