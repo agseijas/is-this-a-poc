@@ -13,6 +13,7 @@ Your instance is <b id="readiness">not ready yet</b>
 <script>
     //const urlParams = new URLSearchParams(window.location.search);
     const hostParam = window.location.hostname;//urlParams.get('host');
+    let tries = 1;
 
     function changeReadiness(host) {
         let notReadyYetToBeReplaced = document.getElementById("readiness");
@@ -28,11 +29,22 @@ Your instance is <b id="readiness">not ready yet</b>
 
     }
 
+    function checkReadiness(url, options, timeout = 3000) {
+        return Promise.race([
+            fetch(url, options),
+            new Promise((_, reject) =>
+                setTimeout(() => reject(new Error('timeout')), timeout)
+            )
+        ]);
+    }
+
     async function checkReadinessOfHost(host) {
         let instanceIsReady = false;
 
         while (!instanceIsReady) {
-            fetch(`//${host}`)
+            console.log("try: " + tries)
+            tries++;
+            checkReadiness(`//${host}`)
                 .then(function (response) {
                     return response.text();
                 })
